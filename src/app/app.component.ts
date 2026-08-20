@@ -16,6 +16,7 @@ export class AppComponent implements OnInit {
   isSpinning = false;
   rotation = 0;
   showAllHistory = false;
+  removeWinner = false;
 
   ngOnInit(): void {
     if (typeof window !== 'undefined') {
@@ -41,6 +42,10 @@ export class AppComponent implements OnInit {
     window.setTimeout(() => {
       this.result = this.participants[winnerIndex];
       this.history = [this.result, ...this.history].slice(0, 20);
+      if (this.removeWinner) {
+        this.participants = this.participants.filter((_, index) => index !== winnerIndex);
+        this.participantText = this.participants.join('\n');
+      }
       this.isSpinning = false;
       this.saveHistory();
     }, 4600);

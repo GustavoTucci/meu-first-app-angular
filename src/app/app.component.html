@@ -32,6 +32,11 @@
       <div class="panel-heading"><div><p class="eyebrow">sua lista</p><h2>Participantes</h2></div><span class="count">{{ participants.length | number: '2.0-0' }}</span></div>
       <textarea [(ngModel)]="participantText" (ngModelChange)="syncParticipants()" aria-label="Lista de participantes" spellcheck="false"></textarea>
       <p class="field-note">Um nome por linha. Você pode editar a lista a qualquer momento.</p>
+      <label class="remove-option">
+        <input type="checkbox" [(ngModel)]="removeWinner" />
+        <span class="toggle" aria-hidden="true"></span>
+        <span><strong>Remover vencedor</strong><small>O nome sai da lista após o sorteio</small></span>
+      </label>
       <div class="history-heading"><h2>Últimos resultados</h2><button type="button" (click)="clearHistory()" [disabled]="!history.length">limpar</button></div>
       @if (history.length) {
         <ol class="history-list">
