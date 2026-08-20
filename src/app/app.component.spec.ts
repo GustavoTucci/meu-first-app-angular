@@ -43,4 +43,29 @@ describe('AppComponent', () => {
     expect(app.participants).toEqual(['Bruno']);
     jasmine.clock().uninstall();
   });
+
+  it('should create one color segment per participant', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.participants = ['Ana', 'Bruno'];
+    expect(app.wheelBackground()).toContain('#e9674f 0deg 180deg');
+    expect(app.wheelBackground()).toContain('#f0c45b 180deg 360deg');
+
+    app.participants = ['Ana', 'Bruno', 'Carla', 'Diego', 'Elisa'];
+    expect(app.wheelBackground()).toContain('#e9674f 0deg 72deg');
+    expect(app.wheelBackground()).toContain('#e6a45e 288deg 360deg');
+  });
+
+  it('should keep each remaining participant color after removal', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    const app = fixture.componentInstance;
+    app.participants = ['Ana', 'Bruno', 'Carla'];
+    app.participantText = app.participants.join('\n');
+    app.participantColors = ['#e9674f', '#f0c45b', '#6a9a73'];
+
+    app.participantText = 'Ana\nCarla';
+    app.syncParticipants();
+
+    expect(app.participantColors).toEqual(['#e9674f', '#6a9a73']);
+  });
 });

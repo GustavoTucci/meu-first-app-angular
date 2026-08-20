@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class AppComponent implements OnInit {
   participants = ['Ana Souza', 'Bruno Lima', 'Carla Mendes', 'Diego Rocha', 'Elisa Martins', 'Felipe Costa'];
+  participantColors = ['#e9674f', '#f0c45b', '#6a9a73', '#5b8fa5', '#e6a45e', '#9c789c'];
   participantText = this.participants.join('\n');
   history: string[] = [];
   result = '';
@@ -26,7 +27,10 @@ export class AppComponent implements OnInit {
   }
 
   syncParticipants(): void {
+    const previousColors = new Map(this.participants.map((participant, index) => [participant, this.participantColors[index]]));
+    const colors = ['#e9674f', '#f0c45b', '#6a9a73', '#5b8fa5', '#e6a45e', '#9c789c'];
     this.participants = this.participantText.split('\n').map((participant) => participant.trim()).filter(Boolean);
+    this.participantColors = this.participants.map((participant, index) => previousColors.get(participant) ?? colors[index % colors.length]);
     this.result = '';
   }
 
@@ -44,6 +48,7 @@ export class AppComponent implements OnInit {
       this.history = [this.result, ...this.history].slice(0, 20);
       if (this.removeWinner) {
         this.participants = this.participants.filter((_, index) => index !== winnerIndex);
+        this.participantColors = this.participantColors.filter((_, index) => index !== winnerIndex);
         this.participantText = this.participants.join('\n');
       }
       this.isSpinning = false;
@@ -58,5 +63,16 @@ export class AppComponent implements OnInit {
 
   private saveHistory(): void {
     if (typeof window !== 'undefined') window.localStorage.setItem('sorteio-history', JSON.stringify(this.history));
+  }
+
+  wheelBackground(): string {
+    const segmentSize = 360 / Math.max(this.participants.length, 1);
+    const segments = this.participants.map((_, index) => {
+      const start = index * segmentSize;
+      const end = (index + 1) * segmentSize;
+      return `${this.participantColors[index]} ${start}deg ${end}deg`;
+    });
+
+    return `conic-gradient(${segments.join(', ')})`;
   }
 }
