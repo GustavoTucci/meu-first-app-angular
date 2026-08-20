@@ -18,6 +18,10 @@ export class AppComponent implements OnInit {
   rotation = 0;
   showAllHistory = false;
   removeWinner = false;
+  soundEnabled = true;
+  visualEffects = true;
+  showCelebration = false;
+  private audioContext?: AudioContext;
 
   ngOnInit(): void {
     if (typeof window !== 'undefined') {
@@ -42,10 +46,15 @@ export class AppComponent implements OnInit {
     const targetAngle = 360 - (winnerIndex * segmentSize + segmentSize / 2);
     this.isSpinning = true;
     this.result = '';
+    this.showCelebration = false;
+    this.playTone(220, 0.12, 'sine');
     this.rotation += 1440 + targetAngle - (this.rotation % 360);
     window.setTimeout(() => {
       this.result = this.participants[winnerIndex];
       this.history = [this.result, ...this.history].slice(0, 20);
+      this.playTone(660, 0.18, 'triangle');
+      window.setTimeout(() => this.playTone(880, 0.28, 'triangle'), 120);
+      this.showCelebration = this.visualEffects;
       if (this.removeWinner) {
         this.participants = this.participants.filter((_, index) => index !== winnerIndex);
         this.participantColors = this.participantColors.filter((_, index) => index !== winnerIndex);
@@ -53,6 +62,7 @@ export class AppComponent implements OnInit {
       }
       this.isSpinning = false;
       this.saveHistory();
+      if (this.visualEffects) window.setTimeout(() => this.showCelebration = false, 2800);
     }, 4600);
   }
 
@@ -63,6 +73,23 @@ export class AppComponent implements OnInit {
 
   private saveHistory(): void {
     if (typeof window !== 'undefined') window.localStorage.setItem('sorteio-history', JSON.stringify(this.history));
+  }
+
+  private playTone(frequency: number, duration: number, type: OscillatorType): void {
+    if (!this.soundEnabled || typeof window === 'undefined') return;
+    const AudioContextClass = window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!AudioContextClass) return;
+    this.audioContext ??= new AudioContextClass();
+    const oscillator = this.audioContext.createOscillator();
+    const gain = this.audioContext.createGain();
+    oscillator.type = type;
+    oscillator.frequency.value = frequency;
+    gain.gain.setValueAtTime(0.0001, this.audioContext.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.12, this.audioContext.currentTime + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, this.audioContext.currentTime + duration);
+    oscillator.connect(gain).connect(this.audioContext.destination);
+    oscillator.start();
+    oscillator.stop(this.audioContext.currentTime + duration);
   }
 
   wheelBackground(): string {

@@ -13,7 +13,7 @@
   </section>
   <section class="workspace">
     <div class="wheel-panel">
-      <div class="wheel-stage">
+      <div class="wheel-stage" [class.celebrating]="showCelebration">
         <div class="pointer"></div>
         <div class="wheel" [style.background]="wheelBackground()" [style.transform]="'rotate(' + rotation + 'deg)'">
           @for (participant of participants; track $index) {
@@ -21,6 +21,11 @@
           }
         </div>
         <div class="wheel-center"><span>girar</span></div>
+        @if (showCelebration) {
+          <div class="confetti" aria-hidden="true">
+            @for (piece of [1, 2, 3, 4, 5, 6, 7, 8]; track piece) { <i [style.--piece]="piece"></i> }
+          </div>
+        }
       </div>
       <button class="spin-button" type="button" (click)="spin()" [disabled]="isSpinning || participants.length < 2">
         <span>{{ isSpinning ? 'sorteando...' : 'girar a roleta' }}</span><span class="button-arrow">↗</span>
@@ -37,6 +42,10 @@
         <span class="toggle" aria-hidden="true"></span>
         <span><strong>Remover vencedor</strong><small>O nome sai da lista após o sorteio</small></span>
       </label>
+      <div class="effects-options">
+        <label class="effect-option"><input type="checkbox" [(ngModel)]="soundEnabled" /><span class="mini-toggle"></span><span>sons</span></label>
+        <label class="effect-option"><input type="checkbox" [(ngModel)]="visualEffects" /><span class="mini-toggle"></span><span>efeitos visuais</span></label>
+      </div>
       <div class="history-heading"><h2>Últimos resultados</h2><button type="button" (click)="clearHistory()" [disabled]="!history.length">limpar</button></div>
       @if (history.length) {
         <ol class="history-list">
