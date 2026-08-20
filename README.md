@@ -1,59 +1,100 @@
-# MeuAppAngular
+# Gira & Ganha
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.27.
+Aplicação de roleta e sorteio feita com Angular 19. Adicione participantes, gire a roleta e registre os resultados de forma rápida e visual.
 
-## Development server
+## Funcionalidades
 
-To start a local development server, run:
+- Roleta com uma fatia e uma cor para cada participante.
+- Cores associadas aos nomes, preservadas enquanto a lista é editada.
+- Opção para remover automaticamente o vencedor após o sorteio.
+- Histórico dos últimos 20 resultados, salvo no `localStorage` do navegador.
+- Efeitos sonoros opcionais com Web Audio API.
+- Fanfarra instrumental ao revelar o vencedor.
+- Confetes e animações visuais opcionais.
+- Interface responsiva para desktop e dispositivos móveis.
+- Renderização com Angular SSR.
 
-```bash
-ng serve
-```
+## Requisitos
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+- Node.js 18.19 ou superior.
+- npm.
 
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
+## Instalação
 
 ```bash
-ng build
+npm install
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Desenvolvimento
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Inicie o servidor local com:
 
 ```bash
-ng test
+npm start
 ```
 
-## Running end-to-end tests
+Abra `http://localhost:4200/` no navegador. A aplicação recarrega automaticamente após alterações nos arquivos.
 
-For end-to-end (e2e) testing, run:
+## Como usar
+
+1. Edite a lista no painel **Participantes**, usando um nome por linha.
+2. Escolha se o vencedor deve ser removido após o sorteio.
+3. Ative ou desative **sons** e **efeitos visuais**.
+4. Clique em **girar a roleta**.
+
+Os participantes permanecem salvos apenas enquanto estiverem na lista atual. O histórico é persistido localmente no navegador e pode ser apagado pelo botão **limpar**.
+
+Os sons são iniciados por uma ação do usuário, conforme as regras de reprodução dos navegadores. Eles podem ser desligados a qualquer momento.
+
+## Build
+
+Gere a versão otimizada para produção com:
 
 ```bash
-ng e2e
+npm run build
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Os arquivos compilados são gerados em `dist/meu-app-angular/`.
 
-## Additional Resources
+Para iniciar a versão SSR depois do build:
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```bash
+npm run serve:ssr:meu-app-angular
+```
+
+## Testes
+
+Execute os testes unitários:
+
+```bash
+npm test
+```
+
+Para uma execução única em ambiente headless:
+
+```bash
+npx ng test --watch=false --browsers=ChromeHeadless
+```
+
+Os testes cobrem a criação do componente, a seleção de vencedores, a remoção opcional e a associação dinâmica de cores aos participantes.
+
+## Scripts disponíveis
+
+| Comando | Descrição |
+| --- | --- |
+| `npm start` | Inicia o servidor de desenvolvimento |
+| `npm run build` | Gera o build de produção |
+| `npm run watch` | Compila continuamente em modo desenvolvimento |
+| `npm test` | Executa os testes com Karma |
+| `npm run serve:ssr:meu-app-angular` | Inicia o servidor SSR após o build |
+
+## Estrutura principal
+
+```text
+src/
+  app/
+    app.component.ts    # Estado e regras do sorteio
+    app.component.html  # Interface da roleta
+    app.component.css   # Layout, cores e animações
+  styles.css            # Estilos globais e fontes
+```
