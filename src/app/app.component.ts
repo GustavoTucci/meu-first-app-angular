@@ -52,8 +52,7 @@ export class AppComponent implements OnInit {
     window.setTimeout(() => {
       this.result = this.participants[winnerIndex];
       this.history = [this.result, ...this.history].slice(0, 20);
-      this.playTone(660, 0.18, 'triangle');
-      window.setTimeout(() => this.playTone(880, 0.28, 'triangle'), 120);
+      this.playCelebrationSound();
       this.showCelebration = this.visualEffects;
       if (this.removeWinner) {
         this.participants = this.participants.filter((_, index) => index !== winnerIndex);
@@ -90,6 +89,13 @@ export class AppComponent implements OnInit {
     oscillator.connect(gain).connect(this.audioContext.destination);
     oscillator.start();
     oscillator.stop(this.audioContext.currentTime + duration);
+  }
+
+  private playCelebrationSound(): void {
+    if (!this.soundEnabled || typeof window === 'undefined') return;
+    this.playTone(523, 0.16, 'triangle');
+    window.setTimeout(() => this.playTone(659, 0.16, 'triangle'), 100);
+    window.setTimeout(() => this.playTone(784, 0.22, 'triangle'), 200);
   }
 
   wheelBackground(): string {
